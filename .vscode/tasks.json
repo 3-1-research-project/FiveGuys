@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "migrate",
+            "type": "shell",
+            "command": "python manage.py migrate --run-syncdb",
+            "options": {
+                "cwd": "${workspaceFolder}/src/"
+            },
+            "problemMatcher": [],
+        }
+    ]
+}

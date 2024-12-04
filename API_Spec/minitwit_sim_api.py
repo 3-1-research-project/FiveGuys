@@ -116,9 +116,9 @@ def messages():
     # update LATEST
     update_latest(request)
 
-    not_from_sim_response = not_req_from_simulator(request)
-    if not_from_sim_response:
-        return not_from_sim_response
+    # not_from_sim_response = not_req_from_simulator(request)
+    # if not_from_sim_response:
+    #     return not_from_sim_response
 
     no_msgs = request.args.get("no", type=int, default=100)
     if request.method == "GET":
@@ -144,9 +144,9 @@ def messages_per_user(username):
     # update LATEST
     update_latest(request)
 
-    not_from_sim_response = not_req_from_simulator(request)
-    if not_from_sim_response:
-        return not_from_sim_response
+    # not_from_sim_response = not_req_from_simulator(request)
+    # if not_from_sim_response:
+    #     return not_from_sim_response
 
     no_msgs = request.args.get("no", type=int, default=100)
     if request.method == "GET":
@@ -188,9 +188,9 @@ def follow(username):
     # update LATEST
     update_latest(request)
 
-    not_from_sim_response = not_req_from_simulator(request)
-    if not_from_sim_response:
-        return not_from_sim_response
+    # not_from_sim_response = not_req_from_simulator(request)
+    # if not_from_sim_response:
+    #     return not_from_sim_response
 
     user_id = get_user_id(username)
 

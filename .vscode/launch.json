@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "minitwit",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src",
+            "program": "manage.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:5000"
+            ]
+        },
+        {
+            "name": "minitwit-prod",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src",
+            "program": "manage_prod.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:5000"
+            ]
+        }
+    ]
+}

@@ -45,13 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "minitwit",
-    "silk",
-    "log_viewer",
-    # 'django_prometheus',
 ]
 
 MIDDLEWARE = [
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -59,8 +55,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_prometheus.middleware.PrometheusAfterMiddleware",
-    "silk.middleware.SilkyMiddleware",
 ]
 
 ROOT_URLCONF = "minitwit.urls"
@@ -92,8 +86,8 @@ DATABASES = {
         "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": "postgres",
         "USER": "postgres",
-        "PASSWORD": "root",
-        "HOST": "64.226.122.10",
+        "PASSWORD": "1234",
+        "HOST": "172.17.0.4",
         "PORT": "5432",
     }
 }
@@ -118,8 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Prometheus
-PROMETHEUS_METRICS_EXPORT_PORT = 9090
-PROMETHEUS_METRICS_EXPORT_ADDRESS = ""  # All addresses
+# PROMETHEUS_METRICS_EXPORT_PORT = 9090
+# PROMETHEUS_METRICS_EXPORT_ADDRESS = ""  # All addresses
 
 
 # Internationalization
@@ -169,7 +163,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["file"],
-            "level": "INFO",
+            "level": "ERROR",
             "propagate": True,
         },
     },

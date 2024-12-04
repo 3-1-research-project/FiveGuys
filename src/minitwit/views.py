@@ -48,10 +48,10 @@ def timeline(request, path, amount=PER_PAGE):
     redirect to the public timeline.  This timeline shows the user's
     messages as well as all the messages of followed users.
     """
-    print(("We got a visitor from: " + str(request)))
+    # print(("We got a visitor from: " + str(request)))
 
     if not request.user.is_authenticated:
-        print("redirecting!!!")
+        # print("redirecting!!!")
         return redirect("public")
 
     messages = []
@@ -64,14 +64,14 @@ def timeline(request, path, amount=PER_PAGE):
 
     # Add the messages of followed users
     for follower in followers:
-        print(follower)
+        # print(follower)
         follower_messages = unflagged.filter(user__id=follower["whom_id_id"])[
             :amount
         ].values()
         messages.extend(follower_messages)
 
     # Add the messages of the user
-    print(messages)
+    # print(messages)
     user_messages = unflagged.filter(user__id=request.user.id)[:amount].values()
     messages.extend(user_messages)
 
@@ -141,7 +141,7 @@ def user_timeline(request, username, amount=PER_PAGE):
     for message in messages:
         message["username"] = User.objects.get(id=message["user_id"])
 
-    print(messages)
+    # print(messages)
     context = {
         "messages": messages,
         "followed": followed,

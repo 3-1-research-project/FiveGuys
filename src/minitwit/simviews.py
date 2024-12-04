@@ -23,7 +23,7 @@ def register(request):
     email = json.loads(request.body)["email"]
     pwd = json.loads(request.body)["pwd"]
 
-    update_latest(request)
+    # update_latest(request)
     error = None
     if request.method == "POST":
         if username is None:
@@ -47,7 +47,7 @@ def register(request):
 # Get messages
 @csrf_exempt
 def all_msgs(request):
-    update_latest(request)
+    # update_latest(request)
 
     messages = models.Message.objects.all().order_by("-pub_date").values()
     messages = [dict(message) for message in list(messages)]
@@ -65,7 +65,7 @@ def all_msgs(request):
 # Get user messages / Post message
 @csrf_exempt
 def user_msgs(request, username):
-    update_latest(request)
+    # update_latest(request)
 
     if request.method == "GET":
         user = User.objects.get(username=username)
@@ -77,7 +77,7 @@ def user_msgs(request, username):
         amount = int(request.GET.get("no", 100))
         messages = messages[:amount]
 
-        print(messages)
+        # print(messages)
         for message in messages:
             message["content"] = message["text"]
             message["user"] = User.objects.get(id=message["user_id"]).username
@@ -101,7 +101,7 @@ def user_msgs(request, username):
 # Follow/unfollow user
 @csrf_exempt
 def follow_user(request, username):
-    update_latest(request)
+    # update_latest(request)
 
     if request.method == "POST":
         try:

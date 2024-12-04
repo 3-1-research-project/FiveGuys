@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "minitwit",
-    "silk",
-    "log_viewer",
 ]
 
 MIDDLEWARE = [
@@ -53,7 +51,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "silk.middleware.SilkyMiddleware",
 ]
 
 ROOT_URLCONF = "minitwit.urls"
@@ -85,8 +82,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
         "USER": "postgres",
-        "PASSWORD": "root",
-        "HOST": "db",
+        "PASSWORD": "1234",
+        "HOST": "172.17.0.4",
         "PORT": "5432",
     }
 }
