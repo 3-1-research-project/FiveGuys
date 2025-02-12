@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  minitwit:
+    image: minitwit
+    build: .
+    container_name: minitwit
+    hostname: minitwit
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces:cached
+
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=1234 
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432

@@ -1,10 +1,11 @@
 {
-	"name": "Ubuntu",
-	"image": "mcr.microsoft.com/devcontainers/base:jammy",
-	"features": {
-		"ghcr.io/devcontainers/features/python:1": {}
-	},
-	"customizations": {
+    "name": "python-django",
+    "dockerComposeFile": [
+        "./compose.yaml"
+    ],
+    "service": "minitwit",
+    "workspaceFolder": "/workspaces/",
+    "customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-python.python",
@@ -12,5 +13,8 @@
 			]
 		}
 	},
-	"postCreateCommand": "bash .devcontainer/init.sh"
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {}
+    },
+    "postCreateCommand": "bash .devcontainer/init.sh"
 }
