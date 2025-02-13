@@ -203,7 +203,6 @@ def follow(username):
         follows_username = request.json["follow"]
         follows_user_id = get_user_id(follows_username)
         if not follows_user_id:
-            # TODO: This has to be another error, likely 500???
             abort(404)
 
         query = """INSERT INTO follower (who_id, whom_id) VALUES (?, ?)"""
@@ -216,7 +215,6 @@ def follow(username):
         unfollows_username = request.json["unfollow"]
         unfollows_user_id = get_user_id(unfollows_username)
         if not unfollows_user_id:
-            # TODO: This has to be another error, likely 500???
             abort(404)
 
         query = "DELETE FROM follower WHERE who_id=? and WHOM_ID=?"

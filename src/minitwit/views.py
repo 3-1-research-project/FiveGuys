@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 import datetime
 from datetime import datetime
 
@@ -11,7 +12,7 @@ from django.shortcuts import redirect, render
 
 from . import models
 
-#### Helper functions
+# Helper functions
 
 PER_PAGE = 20
 
@@ -21,7 +22,8 @@ def query_db(query, args=(), one=False):
     with connection.cursor() as cursor:
         cursor.execute(query, args)
         rv = [
-            dict((cursor.description[idx][0], value) for idx, value in enumerate(row))
+            dict((cursor.description[idx][0], value)
+                 for idx, value in enumerate(row))
             for row in cursor.fetchall()
         ]
     return (rv[0] if rv else None) if one else rv
@@ -41,7 +43,7 @@ def format_datetime(timestamp):
     return datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%d @ %H:%M")
 
 
-### Views
+# Views
 # /, /public
 def timeline(request, path, amount=PER_PAGE):
     """Shows a users timeline or if no user is logged in it will
@@ -72,7 +74,8 @@ def timeline(request, path, amount=PER_PAGE):
 
     # Add the messages of the user
     # print(messages)
-    user_messages = unflagged.filter(user__id=request.user.id)[:amount].values()
+    user_messages = unflagged.filter(user__id=request.user.id)[
+        :amount].values()
     messages.extend(user_messages)
 
     # Convert to list of dicts
@@ -97,7 +100,8 @@ def public_timeline(request, amount=PER_PAGE):
     """Displays the latest messages of all users."""
     # Fetch all messages
     messages = (
-        models.Message.objects.filter(flagged=0).order_by("-pub_date")[:amount].values()
+        models.Message.objects.filter(flagged=0).order_by(
+            "-pub_date")[:amount].values()
     )
 
     # Convert to list of dicts
@@ -108,7 +112,8 @@ def public_timeline(request, amount=PER_PAGE):
     for message in messages:
         message["username"] = User.objects.get(id=message["user_id"])
 
-    context = {"messages": messages, "amount": amount + PER_PAGE, "test": "/public"}
+    context = {"messages": messages,
+               "amount": amount + PER_PAGE, "test": "/public"}
     return render(request, "../templates/timeline.html", context)
 
 
@@ -121,7 +126,8 @@ def user_timeline(request, username, amount=PER_PAGE):
 
     # Check following
     try:
-        models.Follower.objects.filter(who_id=request.user.id, whom_id=user.id).get()
+        models.Follower.objects.filter(
+            who_id=request.user.id, whom_id=user.id).get()
         followed = True
     except:
         followed = False
@@ -165,7 +171,8 @@ def follow_user(request, username):
         return HttpResponseNotFound("Username does not exist")
 
     try:
-        follow = models.Follower.objects.filter(who_id=request.user, whom_id=user).get()
+        follow = models.Follower.objects.filter(
+            who_id=request.user, whom_id=user).get()
         followed = True
     except:
         followed = False
@@ -221,7 +228,6 @@ def register(request):
         if request.POST["password"] != request.POST["password2"]:
             error = "The passwords do not match"
         else:
-            # TODO: Write better security measures skrrrrt
 
             user = User.objects.create_user(
                 request.POST["username"],
@@ -260,9 +266,6 @@ def add_message(request):
     return redirect("public")
 
 
-from django.http import HttpResponse
-
-
 def load_more_messages(request, last_message_id):
     # get the next 10 messages after the last message ID
     messages = models.Message.objects.filter(id__gt=last_message_id).order_by(
@@ -270,7 +273,8 @@ def load_more_messages(request, last_message_id):
     )[:10]
 
     # render the new messages as HTML'
-    message_html = render(request, "message_list.html", {"messages": messages}).content
+    message_html = render(request, "message_list.html", {
+                          "messages": messages}).content
 
     # return the new messages as an AJAX response
     return HttpResponse(message_html)

@@ -37,7 +37,8 @@ def test_latest():
     url = f"{BASE_URL}/register"
     data = {"username": "test", "email": "test@test", "pwd": "foo"}
     params = {"latest": 1337}
-    response = requests.post(url, data=json.dumps(data), params=params, headers=HEADERS)
+    response = requests.post(url, data=json.dumps(
+        data), params=params, headers=HEADERS)
     assert response.ok
 
     # verify that latest was updated
@@ -57,9 +58,7 @@ def test_register():
         f"{BASE_URL}/register", data=json.dumps(data), headers=HEADERS, params=params
     )
     assert response.ok
-    # TODO: add another assertion that it is really there
 
-    # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
     assert response.json()["latest"] == 1
 
@@ -69,7 +68,8 @@ def test_create_msg():
     data = {"content": "Blub!"}
     url = f"{BASE_URL}/msgs/{username}"
     params = {"latest": 2}
-    response = requests.post(url, data=json.dumps(data), headers=HEADERS, params=params)
+    response = requests.post(url, data=json.dumps(
+        data), headers=HEADERS, params=params)
     assert response.ok
 
     # verify that latest was updated
@@ -126,9 +126,7 @@ def test_register_b():
         f"{BASE_URL}/register", data=json.dumps(data), headers=HEADERS, params=params
     )
     assert response.ok
-    # TODO: add another assertion that it is really there
 
-    # verify that latest was updated
     response = requests.get(f"{BASE_URL}/latest", headers=HEADERS)
     assert response.json()["latest"] == 5
 
@@ -154,12 +152,14 @@ def test_follow_user():
     url = f"{BASE_URL}/fllws/{username}"
     data = {"follow": "b"}
     params = {"latest": 7}
-    response = requests.post(url, data=json.dumps(data), headers=HEADERS, params=params)
+    response = requests.post(url, data=json.dumps(
+        data), headers=HEADERS, params=params)
     assert response.ok
 
     data = {"follow": "c"}
     params = {"latest": 8}
-    response = requests.post(url, data=json.dumps(data), headers=HEADERS, params=params)
+    response = requests.post(url, data=json.dumps(
+        data), headers=HEADERS, params=params)
     assert response.ok
 
     query = {"no": 20, "latest": 9}
@@ -182,7 +182,8 @@ def test_a_unfollows_b():
     #  first send unfollow command
     data = {"unfollow": "b"}
     params = {"latest": 10}
-    response = requests.post(url, data=json.dumps(data), headers=HEADERS, params=params)
+    response = requests.post(url, data=json.dumps(
+        data), headers=HEADERS, params=params)
     assert response.ok
 
     # then verify that b is no longer in follows list

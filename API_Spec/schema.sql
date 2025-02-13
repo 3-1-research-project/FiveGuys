@@ -20,3 +20,14 @@ create table message (
   pub_date integer,
   flagged integer
 );
+
+-- TODO these might be required for the "latest" api calls? 
+ /*
+create table latest (
+  id integer primary key,
+  value integer
+);
+
+-- Copilot suggested this, but I'm not sure if it's necessary
+insert into latest (id, value) VALUES (1, 0);
+*/
