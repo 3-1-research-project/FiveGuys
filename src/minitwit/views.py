@@ -7,14 +7,14 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
 from django.db import connection
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseServerError, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 
 from . import models
 
 # Helper functions
 
-PER_PAGE = 20
+PER_PAGE = 30
 
 
 def query_db(query, args=(), one=False):
@@ -44,20 +44,20 @@ def format_datetime(timestamp):
 
 
 # Views
-# /, /public
+# /
 def timeline(request, path, amount=PER_PAGE):
     """Shows a users timeline or if no user is logged in it will
     redirect to the public timeline.  This timeline shows the user's
     messages as well as all the messages of followed users.
     """
-    # print(("We got a visitor from: " + str(request)))
 
+    # Standard Redirect to Public if not logged in
     if not request.user.is_authenticated:
-        # print("redirecting!!!")
         return redirect("public")
 
     messages = []
-    unflagged = models.Message.objects.filter(flagged=0).order_by("-pub_date")
+    # removed the "flagged = 0"-filter as nothing is flagged anyway
+    unflagged = models.Message.objects.order_by("-pub_date")
 
     followers = models.Follower.objects.filter(who_id=request.user.id).values()
 
@@ -100,7 +100,7 @@ def public_timeline(request, amount=PER_PAGE):
     """Displays the latest messages of all users."""
     # Fetch all messages
     messages = (
-        models.Message.objects.filter(flagged=0).order_by(
+        models.Message.objects.order_by(
             "-pub_date")[:amount].values()
     )
 
@@ -113,7 +113,7 @@ def public_timeline(request, amount=PER_PAGE):
         message["username"] = User.objects.get(id=message["user_id"])
 
     context = {"messages": messages,
-               "amount": amount + PER_PAGE, "test": "/public"}
+               "amount": amount, "test": "/public"}
     return render(request, "../templates/timeline.html", context)
 
 
@@ -163,6 +163,27 @@ def follow_user(request, username):
     """Adds the current user as follower of the given user."""
 
     if not request.user:
+        return redirect("login/")
+
+    try:
+        user = User.objects.get(username=username)
+    except:
+        return HttpResponseNotFound("Username does not exist")
+
+    try:
+        models.Follower.objects.create(who_id=request.user, whom_id=user)
+    except:
+        return HttpResponseServerError("User already follows user")
+
+    return redirect("user_timeline", username=username)
+
+# /unfollow
+
+
+def unfollow_user(request, username):
+    """Adds the current user as follower of the given user."""
+
+    if not request.user:
         return redirect("public/")
 
     try:
@@ -183,28 +204,14 @@ def follow_user(request, username):
         models.Follower.objects.create(who_id=request.user, whom_id=user)
 
     return redirect("user_timeline", username=username)
-    # if user exists, do stuff
-    # if models.User.object.get(username=username).exists():
-
-    # else:
-    # HttpResponseNotFound("User does not exist...")
-
-    # whom_id = models.User
-
-    # #whom_id = get_user_id(username)
-    # if whom_id is None:
-    #     HttpResponseNotFound("User does not exist...")
-    # with connection.cursor() as cursor:
-    #     cursor.execute('insert into follower (who_id, whom_id) values (?, ?)',
-    #                 [session['user_id'], whom_id]) # missing session?
-    #     cursor.commit()
-    # # flash(f'You are now following "{username}") # need flash equivalent
-    # return #redirect('timeline')
 
 
 # /login
 def login(request):
     """Login"""
+    if request.user.is_authenticated:
+        return redirect("/")
+
     if request.method == "POST":
         user = authenticate(
             username=request.POST["username"], password=request.POST["password"]
@@ -213,7 +220,7 @@ def login(request):
             return HttpResponseNotFound("Wrong credentials")
         else:
             auth_login(request, user)
-            return redirect("/public")
+            return redirect("/")
     return render(request, "../templates/login.html", {})
 
 
@@ -223,6 +230,10 @@ def register(request):
     redirect to the public timeline.  This timeline shows the user's
     messages as well as all the messages of followed users.
     """
+
+    if request.user.is_authenticated:
+        return redirect("/")
+
     error = None
     if request.method == "POST":
         if request.POST["password"] != request.POST["password2"]:
@@ -250,17 +261,17 @@ def logout(request):
 def add_message(request):
     """Registers a new message for the user."""
     if request.user.is_authenticated:
+        # Get text and strip whitespace
+        text = request.POST.get("text", "").strip()
+
+        if not text:  # if text is empty just redirect to public without adding message
+            return redirect("public")
+
         message_object = models.Message.objects.create(
-            user=request.user, text=request.POST["text"], flagged=0
+            user=request.user, text=text, flagged=0
         )
 
         message_object.save()
-
-        # g.db.execute('''insert into message (author_id, text, pub_date, flagged)
-        #    values (?, ?, ?, 0)''', (session['user_id'], request.form['text'],
-        #                          int(time.time())))
-        # g.db.commit()
-        # flash('Your message was recorded')
     else:
         return HttpResponseNotFound("User not logged in")
     return redirect("public")

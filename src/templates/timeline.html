@@ -1,57 +1,57 @@
 {% extends "layout.html" %}
 {% block title %}
-  {% if request.path == '/' or request.path == '/public' %}
-    Public Timeline
-  {% elif request.path == '/timeline' %}
-    My Timeline
-  {% else %}
-    {{ profile_user.username }}'s Timeline
-  {% endif %}
+{% if request.path == '/' or request.path == '/public' %}
+Public Timeline
+{% elif request.path == '/timeline' %}
+My Timeline
+{% else %}
+{{ profile_user.username }}'s Timeline
+{% endif %}
 {% endblock %}
 {% block body %}
-  {% if user.is_authenticated %}
-    {% if profile_user.username in request.path %}
-      <div class=followstatus>
-      {% if user.id == profile_user.id %}
-        This is you!
-      {% elif followed %}
-        You are currently following this user.
-        <a class=unfollow href="/fllws/{{profile_user.username}}">Unfollow user</a>.
-      {% else %}
-        You are not yet following this user.
-        <a class=follow href="/fllws/{{profile_user.username}}">Follow user</a>.
-      {% endif %}
-      </div>
-    {% elif request.path == '/public' %}
-      <div class=twitbox>
-        <h3>What's on your mind {{ user.username }}?</h3>
-        <form action="/api/add_message" method=post>
-        {% csrf_token %}
-          <p><input type=text name=text size=60><!--
-          --><input type=submit value="Twit">
-        </form>
-      </div>
-    {% endif %}
+{% if user.is_authenticated %}
+{% if profile_user.username in request.path %}
+<div class=followstatus>
+  {% if user.id == profile_user.id %}
+  This is you!
+  {% elif followed %}
+  You are currently following this user.
+  <a class=unfollow href="/{{profile_user.username}}/unfollow">Unfollow user</a>.
   {% else %}
-    <h2>MiniTwit Public Timeline</h2>
+  You are not yet following this user.
+  <a class=follow href="/{{profile_user.username}}/follow">Follow user</a>.
   {% endif %}
-  <ul class=messages>
+</div>
+{% elif request.path == '/public' %}
+<div class=twitbox>
+  <h3>What's on your mind {{ user.username }}?</h3>
+  <form action="/add_message" method=post>
+    {% csrf_token %}
+    <p><input type=text name=text size=60><!--
+          --><input type=submit value="Twit">
+  </form>
+</div>
+{% endif %}
+{% else %}
+<h2>MiniTwit Public Timeline</h2>
+{% endif %}
+<ul class=messages>
   {% if messages %}
   {% load avatars %}
-    {% for message in messages %}
-      <li><img src="{{ message.username|gravatar_url:50 }}" alt="gravatar image"><p>
-        <strong><a href="/{{message.username}}">{{ message.username }}</a></strong>
-        {{ message.text }}
-        <small>&mdash; {{ message.pub_date }}</small>
-        {% endfor %}
-  {% elif user.username == profile_user.username %}
-    <li><em>It's empty! Tweet some more!</em>
-  {% else %}
-    <li><em>Looks empty in here.. Come back later!</em>
-  {% endif %}
-  </ul>
-  <footer>      
-    <a href ="{{test}}/{{amount}}">Load more messages</a>
-  </footer>
+  {% for message in messages %}
+  <li><img src="{{ message.username|gravatar_url:50 }}" alt="gravatar image">
+    <p>
+      <strong><a href="/user/{{message.username}}">{{ message.username }}</a></strong>
+      {{ message.text }}
+      <small>&mdash; {{ message.pub_date }}</small>
+      {% endfor %}
+      {% elif user.username == profile_user.username %}
+  <li><em>It's empty! Tweet some more!</em>
+    {% else %}
+  <li><em>Looks empty in here.. Come back later!</em>
+    {% endif %}
+</ul>
+<footer>
+  <a href="{{test}}/{{amount}}">Load more messages</a>
+</footer>
 {% endblock %}
-
