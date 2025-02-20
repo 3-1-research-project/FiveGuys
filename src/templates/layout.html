@@ -6,8 +6,7 @@
   <h1>MiniTwit</h1>
   <div class=navigation>
     {% if user.is_authenticated %}
-    <!-- TODO The below might be changed to "/" as that is the true "my timeline" with tweets from users "you" follow -->
-    <a href="/user/{{user.username}}">my timeline</a> |
+    <a href="/">my timeline</a> |
     <a href="/public">public timeline</a> |
     <a href="/logout">sign out [{{ user.username }}]</a>
     {% else %}
@@ -16,6 +15,13 @@
     <a href="/login">sign in</a>
     {% endif %}
   </div>
+  {% if flashes %}
+  <ul class=flashes>
+    {% for message in flashes %}
+    <li>{{ message }}
+      {% endfor %}
+  </ul>
+  {% endif %}
   <div class=body>
     {% block body %}{% endblock %}
   </div>
